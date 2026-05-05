@@ -5,13 +5,31 @@ import { useEffect } from 'react';
 export default function Page() {
   useEffect(() => {
     const cursor = document.getElementById('cursor');
+    const root = document.documentElement;
+    let raf = 0;
 
     const onMouseMove = (e) => {
       if (!cursor) return;
       cursor.style.left = e.clientX + 'px';
       cursor.style.top = e.clientY + 'px';
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const x = (e.clientX / window.innerWidth - 0.5).toFixed(3);
+        const y = (e.clientY / window.innerHeight - 0.5).toFixed(3);
+        root.style.setProperty('--pointer-x', x);
+        root.style.setProperty('--pointer-y', y);
+        raf = 0;
+      });
     };
     document.addEventListener('mousemove', onMouseMove);
+
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? window.scrollY / max : 0;
+      root.style.setProperty('--scroll-progress', progress.toFixed(4));
+    };
+    onScroll();
+    document.addEventListener('scroll', onScroll, { passive: true });
 
     const hoverTargets = document.querySelectorAll(
       'a, .tier, .include-item, .process-step'
@@ -44,6 +62,8 @@ export default function Page() {
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
       hoverTargets.forEach((el) => {
         el.removeEventListener('mouseenter', onEnter);
         el.removeEventListener('mouseleave', onLeave);
@@ -73,6 +93,7 @@ export default function Page() {
   return (
     <>
       <div className="cursor" id="cursor"></div>
+      <div className="scroll-progress" aria-hidden="true"></div>
 
       {/* Header */}
       <header>
@@ -82,6 +103,9 @@ export default function Page() {
 
       {/* Hero */}
       <section className="hero">
+        <div className="hero-glow hero-glow-a" aria-hidden="true"></div>
+        <div className="hero-glow hero-glow-b" aria-hidden="true"></div>
+        <div className="hero-scan" aria-hidden="true"></div>
         <div className="hero-bg-text">PROPOSAL</div>
         <div className="hero-eyebrow">Project Proposal · 2025</div>
         <h1 className="hero-title">
