@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Proposal — Jason</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f3ee;
+    --cream: #e8e4dc;
+    --accent: #c8f542;
+    --accent2: #ff4d1c;
+    --gray: #8a8880;
+    --border: rgba(245,243,238,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    mix-blend-mode: exclusion;
+  }
+  .cursor.hover { width: 40px; height: 40px; }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* Header */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    background: rgba(10,10,10,0.7);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.15em;
+    color: var(--white);
+  }
+  .logo span { color: var(--accent); }
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 140px 48px 80px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 20vw, 280px);
+    color: rgba(255,255,255,0.025);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+  .hero-title .line2 { color: var(--accent); }
+  .hero-title .line3 { 
+    -webkit-text-stroke: 1px var(--white);
+    color: transparent;
+  }
+
+  .hero-sub {
+    margin-top: 48px;
+    display: flex; gap: 80px; align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.7s;
+  }
+  .hero-desc {
+    max-width: 420px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(245,243,238,0.65);
+  }
+  .hero-meta {
+    margin-left: auto;
+    text-align: right;
+  }
+  .hero-meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hero-meta-value {
+    font-size: 14px;
+    color: var(--white);
+  }
+
+  /* Scrolling ticker */
+  .ticker-wrap {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 14px 0;
+    background: var(--accent);
+  }
+  .ticker {
+    display: flex; gap: 0;
+    animation: ticker 18s linear infinite;
+    width: max-content;
+  }
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: var(--black);
+    padding: 0 32px;
+    white-space: nowrap;
+  }
+  .ticker-dot {
+    color: var(--black);
+    opacity: 0.4;
+  }
+
+  /* Section */
+  section {
+    padding: 100px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Note box */
+  .note-box {
+    background: rgba(200, 245, 66, 0.07);
+    border: 1px solid rgba(200, 245, 66, 0.25);
+    border-radius: 2px;
+    padding: 28px 32px;
+    margin-bottom: 80px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .note-icon {
+    width: 20px; height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--accent);
+  }
+  .note-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .note-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(245,243,238,0.8);
+  }
+  .note-text strong { color: var(--accent); font-weight: 500; }
+
+  /* Tiers */
+  .tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .tier {
+    background: var(--black);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .tier:hover { background: #111; }
+
+  .tier.featured {
+    background: #0e130a;
+  }
+  .tier.featured::before {
+    content: 'POPULAR';
+    position: absolute; top: 20px; right: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--black);
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 1px;
+  }
+
+  .tier-medal {
+    margin-bottom: 20px;
+    display: block;
+  }
+  .tier-medal svg { width: 28px; height: 28px; color: var(--accent); stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .icon { display: inline-flex; align-items: center; justify-content: center; }
+  .icon svg { stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .tier-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .tier-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .tier-pages {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .tier-price {
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tier-price-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .tier-price-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--white);
+    line-height: 1;
+  }
+  .tier-price-value span {
+    font-size: 20px;
+    color: var(--gray);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+  }
+  .tier-price-range {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+  .tier-timeline {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .tier-timeline::before { content: none; }
+  .tier-timeline svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; margin-right: 4px; }
+
+  /* Line items */
+  .line-items { display: flex; flex-direction: column; gap: 24px; }
+  .line-item {}
+  .line-item-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .line-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+  }
+  .line-item-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-left: 16px;
+  }
+  .line-item-details {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .line-item-details li {
+    font-size: 12px;
+    color: var(--gray);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .line-item-details li::before {
+    content: '–';
+    position: absolute; left: 0;
+    color: rgba(138,136,128,0.5);
+  }
+
+  /* Includes section */
+  .includes {
+    background: #0d0d0d;
+  }
+  .includes-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .include-item {
+    background: #0d0d0d;
+    padding: 32px 28px;
+    transition: background 0.3s;
+  }
+  .include-item:hover { background: #141414; }
+  .include-icon {
+    width: 28px; height: 28px;
+    margin-bottom: 16px;
+    display: block;
+    color: var(--accent);
+  }
+  .include-icon svg { width: 28px; height: 28px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .include-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--white);
+  }
+  .include-desc {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* Process */
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .process-step {
+    background: var(--black);
+    padding: 40px 32px;
+    position: relative;
+  }
+  .process-step:hover { background: #111; }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.65;
+  }
+  .step-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(200,245,66,0.3);
+    padding: 3px 8px;
+    border-radius: 1px;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: center;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 8vw, 100px);
+    line-height: 0.95;
+  }
+  .cta-title .accent { color: var(--accent); }
+  .cta-title .outline {
+    -webkit-text-stroke: 1px var(--white);
+    color: transparent;
+  }
+  .cta-right { text-align: right; }
+  .cta-sub {
+    font-size: 14px;
+    color: var(--gray);
+    margin-bottom: 32px;
+    line-height: 1.7;
+    max-width: 260px;
+    margin-left: auto;
+  }
+  .cta-contacts { display: flex; flex-direction: column; gap: 12px; }
+  .cta-contact {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--white);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    justify-content: flex-end;
+    transition: color 0.2s;
+  }
+  .cta-contact:hover { color: var(--accent); }
+  .cta-contact-label {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Footer */
+  footer {
+    padding: 32px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--gray);
+  }
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(138,136,128,0.5);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    header { padding: 20px 24px; }
+    .hero { padding: 120px 24px 60px; }
+    .hero-sub { flex-direction: column; gap: 32px; }
+    .hero-meta { margin-left: 0; text-align: left; }
+    section { padding: 60px 24px; }
+    .tiers-grid { grid-template-columns: 1fr; }
+    .includes-grid { grid-template-columns: repeat(2, 1fr); }
+    .process-steps { grid-template-columns: repeat(2, 1fr); }
+    .cta-section { grid-template-columns: 1fr; padding: 80px 24px; }
+    .cta-right { text-align: left; }
+    .cta-sub { margin-left: 0; }
+    .cta-contacts { align-items: flex-start; }
+    .cta-contact { justify-content: flex-start; }
+    footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- Header -->
+<header>
+  <div class="logo">WEB<span>+</span>PROPOSAL</div>
+  <div class="header-tag">Confidential — Prepared for Jason</div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-text">PROPOSAL</div>
+  <div class="hero-eyebrow">Project Proposal · 2025</div>
+  <h1 class="hero-title">
+    <div>Website</div>
+    <div class="line2">Design &</div>
+    <div class="line3">Development</div>
+  </h1>
+  <div class="hero-sub">
+    <p class="hero-desc">
+      A full-scale creative website featuring advanced 3D video production, 
+      cinematic scroll animations, and premium UI/UX design — 
+      built to the standard of OFF+BRAND.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-label">Prepared for</div>
+      <div class="hero-meta-value">Jason</div>
+      <br>
+      <div class="hero-meta-label">Prepared by</div>
+      <div class="hero-meta-value">Folk 吳禮威</div>
+      <br>
+      <div class="hero-meta-label">Date</div>
+      <div class="hero-meta-value">May 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">UX/UI DESIGN</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">3D VIDEO PRODUCTION</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">SCROLL ANIMATIONS</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">CUSTOM DEVELOPMENT</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">MOBILE RESPONSIVE</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">DEPLOYMENT & LAUNCH</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">UX/UI DESIGN</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">3D VIDEO PRODUCTION</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">SCROLL ANIMATIONS</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">CUSTOM DEVELOPMENT</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">MOBILE RESPONSIVE</span><span class="ticker-item ticker-dot">✦</span>
+    <span class="ticker-item">DEPLOYMENT & LAUNCH</span><span class="ticker-item ticker-dot">✦</span>
+  </div>
+</div>
+
+<!-- Pricing -->
+<section>
+  <div class="section-label">01 — Pricing Tiers</div>
+
+  <div class="note-box reveal">
+    <div class="note-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div class="note-text">
+      <strong>Important note on pricing:</strong> This website incorporates 
+      <strong>cinematic rendered 3D video assets</strong> — not static images or simple graphics. 
+      Each section uses high-quality 3D animation sequences produced by specialized motion designers, 
+      similar to the visual style of OFF+BRAND.com. This is a key driver of production cost and quality. 
+      All 3D content is custom-produced for your brand.
+    </div>
+  </div>
+
+  <div class="tiers-grid reveal">
+
+    <!-- Tier 1 -->
+    <div class="tier">
+      <span class="tier-medal"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.11"/></svg></span>
+      <div class="tier-name">Tier 1</div>
+      <div class="tier-title">Landing Page</div>
+      <div class="tier-pages">1 – 3 pages</div>
+      <div class="tier-price">
+        <div class="tier-price-label">Estimated Total</div>
+        <div class="tier-price-value">118K <span>– 190K</span></div>
+        <div class="tier-price-range">THB (excl. VAT)</div>
+      </div>
+      <div class="tier-timeline"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>4 – 6 weeks</div>
+      <div class="line-items">
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>UX/UI Design</span>
+            <span class="line-item-price">35K – 55K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Full page layout & visual direction</li>
+            <li>Mobile responsive design</li>
+            <li>Component & module design</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>Development</span>
+            <span class="line-item-price">50K – 80K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Scroll-based animations (GSAP/Lottie)</li>
+            <li>3D video integration & motion timing</li>
+            <li>Interactive hover effects</li>
+            <li>Mobile optimization</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>3D Video Production</span>
+            <span class="line-item-price">15K – 25K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Rendered 3D video assets (hero + sections)</li>
+            <li>Color grading & export optimization</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>Assets & Imagery</span>
+            <span class="line-item-price">10K – 20K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Custom graphics, icons & visual elements</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Launch & Hosting</span>
+            <span class="line-item-price">8K – 10K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Domain config, deployment, performance check</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 2 -->
+    <div class="tier featured">
+      <span class="tier-medal"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.11"/></svg></span>
+      <div class="tier-name">Tier 2</div>
+      <div class="tier-title">Standard Site</div>
+      <div class="tier-pages">4 – 7 pages</div>
+      <div class="tier-price">
+        <div class="tier-price-label">Estimated Total</div>
+        <div class="tier-price-value">205K <span>– 360K</span></div>
+        <div class="tier-price-range">THB (excl. VAT)</div>
+      </div>
+      <div class="tier-timeline"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>6 – 9 weeks</div>
+      <div class="line-items">
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>UX/UI Design</span>
+            <span class="line-item-price">60K – 100K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Multi-page layout system</li>
+            <li>Design system & component library</li>
+            <li>Micro-interaction specs</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>Development</span>
+            <span class="line-item-price">90K – 150K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Full scroll animation system</li>
+            <li>3D video scenes per section</li>
+            <li>Page transitions & preloader</li>
+            <li>Cross-browser & mobile optimization</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>3D Video Production</span>
+            <span class="line-item-price">25K – 50K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Multiple rendered 3D video sequences</li>
+            <li>Per-section motion assets</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>Assets & Imagery</span>
+            <span class="line-item-price">20K – 45K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Photography direction, custom graphics</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Launch & Hosting</span>
+            <span class="line-item-price">10K – 15K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Staging environment, QA, deployment</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 3 -->
+    <div class="tier">
+      <span class="tier-medal"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.11"/></svg></span>
+      <div class="tier-name">Tier 3</div>
+      <div class="tier-title">Full Site</div>
+      <div class="tier-pages">8 – 12 pages</div>
+      <div class="tier-price">
+        <div class="tier-price-label">Estimated Total</div>
+        <div class="tier-price-value">340K <span>– 550K</span></div>
+        <div class="tier-price-range">THB (excl. VAT)</div>
+      </div>
+      <div class="tier-timeline"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>8 – 12 weeks</div>
+      <div class="line-items">
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>UX/UI Design</span>
+            <span class="line-item-price">90K – 135K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Full design system (type, color, spacing)</li>
+            <li>All page templates + unique layouts</li>
+            <li>Prototype & user flow</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>Development</span>
+            <span class="line-item-price">150K – 240K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Advanced animation & interaction system</li>
+            <li>3D video per page with scroll sync</li>
+            <li>Custom cursor, preloader, transitions</li>
+            <li>CMS integration (if needed)</li>
+            <li>Performance & SEO optimization</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>3D Video Production</span>
+            <span class="line-item-price">45K – 80K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Full suite of rendered 3D videos</li>
+            <li>Hero, section & background animations</li>
+            <li>Professional color grade & compression</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>Assets & Imagery</span>
+            <span class="line-item-price">40K – 75K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Full art direction, custom visuals, icons</li>
+          </ul>
+        </div>
+        <div class="line-item">
+          <div class="line-item-header">
+            <span class="line-item-name"><span class="icon" style="width:14px;height:14px;margin-right:7px;color:var(--gray);vertical-align:middle"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>Launch & Hosting</span>
+            <span class="line-item-price">15K – 20K THB</span>
+          </div>
+          <ul class="line-item-details">
+            <li>Full QA, staging, deployment & handoff</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- What's Included -->
+<section class="includes">
+  <div class="section-label">02 — What's Included in All Tiers</div>
+  <div class="includes-grid reveal">
+    <div class="include-item">
+      <span class="include-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+      <div class="include-title">Full Design Ownership</div>
+      <div class="include-desc">All source files, Figma frames, and design assets handed over to you.</div>
+    </div>
+    <div class="include-item">
+      <span class="include-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+      <div class="include-title">UI Components & Modules</div>
+      <div class="include-desc">Every button, card, section, and interactive module — designed and built.</div>
+    </div>
+    <div class="include-item">
+      <span class="include-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></span>
+      <div class="include-title">3D Video Assets</div>
+      <div class="include-desc">Custom-rendered 3D video sequences tailored to your brand identity.</div>
+    </div>
+    <div class="include-item">
+      <span class="include-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+      <div class="include-title">Mobile Responsive</div>
+      <div class="include-desc">Fully optimized across all screen sizes — mobile, tablet, and desktop.</div>
+    </div>
+    <div class="include-item">
+      <span class="include-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+      <div class="include-title">Deployment & Launch</div>
+      <div class="include-desc">Live site setup, hosting config, and post-launch quality check included.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section>
+  <div class="section-label">03 — How We Work</div>
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Discovery & Brief</div>
+      <div class="step-desc">We align on your goals, brand identity, target audience, and creative direction before anything else.</div>
+      <span class="step-tag">Week 1</span>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Design & 3D Production</div>
+      <div class="step-desc">UX wireframes, high-fidelity UI design, and 3D video rendering happen in parallel for efficiency.</div>
+      <span class="step-tag">Week 2 – 5</span>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Development & Animation</div>
+      <div class="step-desc">Frontend coded with scroll animations, 3D video integration, and all interactive elements built.</div>
+      <span class="step-tag">Week 4 – 9</span>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-title">QA & Launch</div>
+      <div class="step-desc">Full quality assurance across devices, performance testing, then deployment and handoff.</div>
+      <span class="step-tag">Final Week</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-title">
+    <div>Let's</div>
+    <div class="accent">Build</div>
+    <div class="outline">Together.</div>
+  </div>
+  <div class="cta-right">
+    <p class="cta-sub">Ready to get started? Let us know which tier fits your vision and we'll tailor a custom quote.</p>
+    <div class="cta-contacts">
+      <div>
+        <div class="cta-contact-label">Contact</div>
+        <a class="cta-contact" href="#">Folk 吳禮威</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-copy">© 2025 — Confidential Proposal for Jason</div>
+  <div class="footer-note">Prices are estimates and subject to final scope confirmation</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, .tier, .include-item, .process-step').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
