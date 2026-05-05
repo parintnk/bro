@@ -8,7 +8,7 @@ export default function Page() {
     const root = document.documentElement;
     let raf = 0;
 
-    const onMouseMove = (e) => {
+    const onPointerMove = (e) => {
       if (!cursor) return;
       cursor.style.left = e.clientX + 'px';
       cursor.style.top = e.clientY + 'px';
@@ -21,7 +21,7 @@ export default function Page() {
         raf = 0;
       });
     };
-    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('pointermove', onPointerMove, { passive: true });
 
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -61,7 +61,7 @@ export default function Page() {
     reveals.forEach((el) => observer.observe(el));
 
     return () => {
-      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('pointermove', onPointerMove);
       document.removeEventListener('scroll', onScroll);
       if (raf) cancelAnimationFrame(raf);
       hoverTargets.forEach((el) => {

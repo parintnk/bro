@@ -706,6 +706,17 @@
   @media (max-width: 900px) {
     header { padding: 20px 24px; }
     .hero { padding: 120px 24px 60px; }
+    .hero::before {
+      background-size: 56px 56px;
+      opacity: 0.65;
+    }
+    .hero-glow {
+      width: clamp(150px, 58vw, 280px);
+      opacity: 0.28;
+    }
+    .hero-glow-a { top: 18%; right: -18%; }
+    .hero-glow-b { left: -22%; bottom: 18%; }
+    .hero-scan { animation-duration: 7s; }
     .hero-sub { flex-direction: column; gap: 32px; }
     .hero-meta { margin-left: 0; text-align: left; }
     section { padding: 60px 24px; }
@@ -718,6 +729,26 @@
     .cta-contacts { align-items: flex-start; }
     .cta-contact { justify-content: flex-start; }
     footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    body { cursor: auto; }
+    .cursor { display: none; }
+    .tier:hover,
+    .include-item:hover,
+    .process-step:hover {
+      transform: none;
+      box-shadow: none;
+    }
+    .tier:active,
+    .include-item:active,
+    .process-step:active {
+      transform: scale(0.985);
+      transition-duration: 0.12s;
+    }
+    .ticker-wrap:hover .ticker {
+      animation-play-state: running;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
